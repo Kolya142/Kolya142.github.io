@@ -26,8 +26,3 @@ function lang_button() {
     document.getElementById("l").value = lang;
     document.cookie = "lang=" + lang
 }
-function sites(site) {
-    if (site == "jsfiddle") {
-        window.open("https://kolya142.github.io/jsfiddle", "_self")
-    }
-}
