@@ -13,6 +13,7 @@ function main() {
     }
     else {
         document.getElementById("hi").innerHTML = "Привет";
+        document.getElementById("pd").innerHTML = "Pyvdl документация";
     }
 }
 function lang_button() {
