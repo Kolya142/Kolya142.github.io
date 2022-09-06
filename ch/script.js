@@ -1,3 +1,11 @@
+function getCookie(name) {
+	var cookies = document.cookie.split("; ");
+	var f = "en";
+	for (i of cookies) { 
+		if (i.split("=")[0] == name) {f = i.split("=")[1];}
+	}
+	return f
+}
 function en() {
     const data = document.getElementById("inp").value;
     const out = document.getElementById("out");
@@ -12,6 +20,14 @@ function en() {
     out_ += String(end);
     out.value = out_;
 }
+function main() {
+    lang = getCookie("lang");
+    if (lang == "ru") {
+        document.getElementById("en").value = "зашифровать"
+        document.getElementById("de").value = "расшифровать"
+    }
+}
+main();
 function de() {
     const data = document.getElementById("inp").value;
     const out = document.getElementById("out");
