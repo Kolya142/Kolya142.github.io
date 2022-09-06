@@ -1,5 +1,6 @@
 #menu {
     background-color: blue;
+    animation-delay: 2s;
 }
 #menu_obj {
     background-color: rgb(168, 168, 255, 0.6);
