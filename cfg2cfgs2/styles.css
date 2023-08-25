@@ -1,0 +1,19 @@
+#back {
+	left:0;
+	right:0;
+	top:0;
+	bottom:0;
+}
+textarea {
+    background-color: rgb(60, 60, 60);
+    color: white;
+}
+#uploaddiv {
+    background-color: cyan;
+    width:min-content;
+    padding: 0%;
+}
+#upload {
+    background-color:rgba(0, 0, 0, 0);
+    margin: auto;
+}
