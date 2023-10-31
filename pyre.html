@@ -58,7 +58,7 @@
                 document.getElementById('serverAddress').innerHTML = `Server Address: ${serverAddress}`;
                 document.getElementById('description').innerHTML = `Description: ${description}`;
 
-                sock = new WebSocket("ws://" + serverAddress);
+                sock = new WebSocket(serverAddress);
 
                 sock.onopen = () => {
                     showMessage("Connected to the server.");
