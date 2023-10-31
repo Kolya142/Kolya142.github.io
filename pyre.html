@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>python remote execute</title>
+</head>
+<body>
+    <h1>python remote execute</h1>
+
+    <!-- File Upload Form -->
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" accept=".bin">
+        <input type="submit" value="Upload File">
+    </form>
+    <input type="button" id="run_button" value="run">
+    <input type="button" id="clear_button" value="clear">
+
+    <!-- Display Server Address, Description, and Code -->
+    <div id="serverAddress"></div>
+    <div id="description"></div>
+
+    <!-- WebSocket Output -->
+    <div id="output"></div>
+
+    <script>
+        let sock = null;
+
+        const outputDiv = document.getElementById('output');
+
+        // Function to show messages on the page
+        function showMessage(message) {
+            outputDiv.innerHTML += message + '<br>';
+        }
+
+        // File Upload Form Submission
+        const uploadForm = document.getElementById('uploadForm');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const file = fileInput.files[0];
+            if (!file) {
+                showMessage("Please select a .bin file.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const fileContents = String.fromCharCode(...new Uint8Array(event.target.result));
+                const parts = fileContents.split('\x00');
+                const serverAddress = parts[1];
+                const description = parts[2];
+                const code = parts[3];
+
+                // Display server address, description, and code
+                document.getElementById('serverAddress').innerHTML = `Server Address: ${serverAddress}`;
+                document.getElementById('description').innerHTML = `Description: ${description}`;
+
+                sock = new WebSocket("ws://" + serverAddress);
+
+                sock.onopen = () => {
+                    showMessage("Connected to the server.");
+                };
+
+                document.getElementById('run_button').onclick = () => {
+                    sock.send(code);
+                };
+
+                document.getElementById('clear_button').onclick = () => {
+                    outputDiv.innerHTML = '';
+                };
+
+                sock.onerror = (error) => {
+                    showMessage(`WebSocket Error: ${error.message}`);
+                };
+
+                sock.onmessage = (event) => {
+                    showMessage(`Server Response: ${event.data}`);
+                };
+
+                sock.onclose = (event) => {
+                    if (event.wasClean) {
+                        showMessage(`Connection closed cleanly, code=${event.code}, reason=${event.reason}`);
+                    } else {
+                        showMessage('Connection died');
+                    }
+                };
+            };
+
+            reader.readAsArrayBuffer(file);
+        });
+    </script>
+</body>
+</html>
