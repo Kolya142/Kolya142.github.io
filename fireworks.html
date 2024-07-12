@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Fireworks</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      class FireWork {
+        constructor() {
+          // 640x480 - x:320,y:480
+          this.pos = createVector(width / 2, height);
+          let angle = random(318, 636) / 1000 * 6.28319;
+          this.vel = createVector(sin(angle), cos(angle));
+          this.vel.normalize();
+          this.vel.mult(20);
+          this.r = int(random(255));
+          this.g = int(random(255));
+          this.b = int(random(255));
+        }
+
+        update() {
+          this.vel = createVector(this.vel.x * 0.99, this.vel.y * 0.99);
+          this.vel = createVector(this.vel.x, this.vel.y + 0.1);
+          this.pos.add(this.vel);
+        }
+      }
+
+      let fireworks = [];
+      let ind;
+
+      function setup() {
+        ind = 0;
+        createCanvas(1920, 1080);
+        noStroke();
+        rectMode(CENTER);
+        for (let i = 0; i < 100; i++) {
+          fireworks.push(new FireWork());
+        }
+      }
+
+      function draw() {
+        background(51);
+        for (let i = fireworks.length - 1; i >= 0; i--) {
+          let fw = fireworks[i];
+          fill(fw.r, fw.g, fw.b);
+          circle(fw.pos.x, fw.pos.y, fw.vel.mag());
+          fw.update();
+          if (fw.pos.y > height) {
+            fireworks.splice(i, 1);
+          }
+        }
+        for (let i = 0; i < 4; i++) {
+          fireworks.push(new FireWork());
+        }
+        ind += 1;
+      }
+    </script>
+  </body>
+</html>
