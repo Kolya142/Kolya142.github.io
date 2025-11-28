@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="https://kolya142.github.io/public/style.css">
+  </head>
+  <body>
+    <textarea id="contq">buddy's name</textarea>
+    <textarea id="inp">input</textarea>
+    <input type="button" value="Encrypt" onclick="en();" class='button' id="en"/>
+    <input type="button" value="Decrypt" onclick="de();" class='button' id="de"/>
+    <input type="button" value="Get my key" onclick="gtk();" class='button' id="gtk"/>
+    <input type="button" value="Add my buddy" onclick="adb();" class='button' id="adb"/>
+    <textarea id="out">out</textarea>
+    <h4>This page didn't share entered text via network. This page did store some OpenPGP keys in local storage. </h4>
+    <h4>Encryption library: </h4><a href="https://github.com/openpgpjs/openpgpjs">OpenPGP.js library</a>.
+    <h4>The source code located here: </h4><a href="https://github.com/Kolya142/Kolya142.github.io">https://github.com/Kolya142/Kolya142.github.io</a>.
+    <script src="openpgp.min.js"></script>
+    <script>
+      const contq = document.getElementById("contq");
+      const inp = document.getElementById("inp");
+      const out = document.getElementById("out");
+
+      async function gk() {
+      const key = await openpgp.generateKey({
+      userIDs: { name: 'Nobody', email: 'nobody@localhost' },
+      type: 'ecc',
+      curve: 'curve25519',
+      format: 'object'
+      });
+      localStorage.setItem("mypriv", key.privateKey.armor());
+      localStorage.setItem("mypub", key.publicKey.armor());
+      }
+
+      async function adb() {
+      let buddy_arr = JSON.parse(localStorage.getItem("buddy"));
+      buddy_arr[contq.value] = inp.value;
+      localStorage.setItem("buddy", JSON.stringify(buddy_arr));
+      out.value = "Welcome to our privacy club, " + contq.value;
+      }
+
+      async function gtk() {
+      out.value = localStorage.getItem("mypub");
+      }
+
+      if (localStorage.getItem("mypriv") === null || localStorage.getItem("mypub") === null) gk();
+      
+      if (localStorage.getItem("buddy") === null) localStorage.setItem("buddy", "{}");
+      
+      async function en() {
+      let buddy_arr = JSON.parse(localStorage.getItem("buddy"));
+      if (buddy_arr[contq.value] === undefined) {
+      contq.value = contq.value + " is not my buddy";
+      }
+      const key = await openpgp.readKey({armoredKey: buddy_arr[contq.value]});
+      out.value = await openpgp.encrypt({
+      message: await openpgp.createMessage({ text: inp.value }),
+      encryptionKeys: [key]
+      });
+      }
+      
+      async function de() {
+      const key = await openpgp.readPrivateKey({armoredKey: localStorage.getItem("mypriv")});
+      const msg = await openpgp.readMessage({ armoredMessage: inp.value });
+      console.log(key, msg);
+      out.value = (await openpgp.decrypt({
+      decryptionKeys: [key],
+      message: msg
+      })).data;
+      }
+    </script>
+  </body>
+</html>
