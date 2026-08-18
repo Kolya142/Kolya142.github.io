@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhereGP</title>
+  </head>
+  <body>
+    <h4 id=n1>*1. Before you can encrypt message you should add a person's contact <a href='#n2'>*2</a> first</h4>
+    <h4 id=n2>*2. To add a person's contact, you should recieve their key <a href='#n3'>*3</a>, paste it to textbox "key/message" and enter their name in the textbox "contact's name" and press "Add my contact"</h4>
+    <h4 id=n3>*3. To obtain your public key you should first press "Get my key" and then copy key from the textbox "output"</h4>
+    <hr>
+    <input id="contq" placeholder="contact's name"></input>
+    <br>
+    <textarea id="inp" placeholder="key/message"></textarea>
+    <hr>
+    <input type="button" value="Log in" onclick="login();" class='button' id="_lg"/><br>
+    <input type="button" value="Encrypt" onclick="en();" class='button' id="_en"/><br>
+    <input type="button" value="Decrypt" onclick="de();" class='button' id="_de"/><br>
+    <input type="button" value="Get my key" onclick="gtk();" class='button' id="_gtk"/><br>
+    <input type="button" value="Add my contact" onclick="adb();" class='button' id="_adb"/><br>
+    <input type="button" value="Regenerate my key" onclick="confirm('Regenerate my key??') && gk();" class='button' id="_gk"/><br>
+    <input type="button" value="Clear input fields" onclick="cif();" class='button' id="_cif"/><br>
+    <hr>
+    <textarea id="out" placeholder="output" readonly></textarea><br>
+    <input type="button" value="Copy whole output" onclick="cwo();" class='button' id="_cwo"/><br>
+    <input type="button" value="Destroy all data" onclick="dad();" class='button' id="_dad"/><br>
+    <hr>
+    <h1>Your contacts:</h1>
+    <div id="contacts_list"></div>
+    <input type="button" value="Do not restrict real names" onclick="rrn();" class='button' id="_rrn"/>
+    <hr>
+    <h2>Expert things:</h2>
+    <input type="button" value="Change encryption key" onclick="cek();" class='button' id="_cek"/><text style="color: red;">(DO NOT CHANGE YOUR KEYS BECAUSE A PERSON TOLD YOU TO)</text><br>
+    <input type="button" value="Get secret key" onclick="gsek();" class='button' id="_gsek"/><text style="color: red;">(DO NOT TELL YOUR SECRET KEY TO ANYBODY)</text><br>
+    <hr>
+    <h2>Awesome links:</h2>
+    <h4>OpenPGP.js encryption library is located here: <a href="https://github.com/openpgpjs/openpgpjs">https://github.com/openpgpjs/openpgpjs</a>.</h4>
+    <h4>The source code is located here: <a href="https://github.com/Gudhein3/WhereGP">https://github.com/Gudhein3/WhereGP</a>.</h4>
+    <h4>Issues can be reported here: <a href="https://github.com/Gudhein3/WhereGP/issues">https://github.com/Gudhein3/WhereGP/issues</a>.</h4>
+    <hr>
+    <h2>Legal things that nobody reads:</h2>
+    <input type="button" value="Show legal information" onclick="tlt();" class='button' id="_tlt"/>
+    <div id="legal_things" hidden>
+      <h4>The page doesn't send any of your personal data via the network.</h4>
+      <h4>You can do whatever you want with the page, but you have to comply with <a href="./LICENSE">the license of the page</a> and <a href="./THIRDPARTY_LICENSES">its components</a>.</h4>
+    </div>
+    <script src="openpgp.min.js"></script>
+    <script>
+      localization = {
+          "this_inf_for_key": "Answers on the following questions will be used in the metadata of your key. Anybody who has your key is able to obtain the informatin",
+          "uralg": "You already logged in.",
+          "undlg": "You need to log in first.\nDo you want to log in?",
+          "umsc": "You need to specify contact name first.",
+          "cki": "You need to specify a valid contact's key before adding it.",
+          "enter_fn": "Enter your full name. (eg. John Smith or superbitgamer3000)",
+          "enter_em": "Enter your email. (eg. john.smith@natmail.eu or a@bob.bab)",
+          "enter_em_inv": "Invalid Email.\nEnter your email. (eg. john.smith@natmail.eu or a@bob.bab)",
+          "no_contacts": "You doesn't have them :(",
+          "dst_al_dt": "Do you want to destroy all of your data?",
+          "is_not_ur_cn": "You need to add a contact first: ",
+          "welcome_cn": "Welcome, ",
+          "do_u_want_rn_cn": "Do you want to rename the contact: ",
+          "do_u_want_rm_cn": "Do you want to delete the contact: ",
+          "ent_new_cn_nm": "Enter a new name for the contact: ",
+          "del_cn_js": "[Delete]", // js stands for just.
+          "rn_cn_js": "[Rename]",
+          "ch_key_cnfm": "Do you want to change your key?\nType \"yes_iam_expert\" if yes.",
+          "gt_key_cnfm": "Do you want to get your secret key?\nType \"yes_iam_expert\" if yes.",
+          "exp_tpe": "yes_iam_expert",
+          "ch_key_priv_cnfm": "yes_i_wanna_private",
+          "ch_key_pub_cnfm": "yes_i_wanna_public",
+          "ch_key": "Type \"yes_i_wanna_private\" if you want to change your private key\nType \"yes_i_wanna_public\" if you want to change your public key",
+          "sh_legal_th": "Show legal information",
+          "hd_legal_th": "Hide legal information",
+          "inv_cn_id": "Contact's name or Email is invalid",
+          "rs_rl_nms": "Restrict real names", // I have no idea why I called the action "restrict", but it sounds cool, so I'll keep it.
+          "d_rs_rl_nms": "Do not restrict real names",
+          "rstd": "Restricted",
+      };
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>

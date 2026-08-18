@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhereGP (RU)</title>
+  </head>
+  <body>
+    <h4 id=n1>*1. Перед началом шифрования сообщений, вам необходимо добавить контакт <a href='#n2'>*2</a></h4>
+    <h4 id=n2>*2. Чтобы добавить контакт, вам необходимо узнать ключ человека <a href='#n3'>*3</a> и вставить в поле "ключ/сообщение", потом вам необходимо написать имя человека в поле "имя контакта" и нажать "Добавить контакт"</h4>
+    <h4 id=n3>*3. Чтобы получить ваш публичный ключ, вам необходимо нажать "Получить мой ключ" и скопировать его из поля "результат"</h4>
+    <hr>
+    <input id="contq" placeholder="имя контакта"></input>
+    <br>
+    <textarea id="inp" placeholder="ключ/сообщение"></textarea>
+    <hr>
+    <input type="button" value="Войти" onclick="login();" class='button' id="_lg"/><br>
+    <input type="button" value="Зашифровать" onclick="en();" class='button' id="_en"/><br>
+    <input type="button" value="Расшифровать" onclick="de();" class='button' id="_de"/><br>
+    <input type="button" value="Получить мой ключ" onclick="gtk();" class='button' id="_gtk"/><br>
+    <input type="button" value="Добавить контакт" onclick="adb();" class='button' id="_adb"/><br>
+    <input type="button" value="Переделать мой ключ" onclick="confirm('Точно переделать мой ключ??') && gk();" class='button' id="_gk"/><br>
+    <input type="button" value="Очистить поля ввода" onclick="cif();" class='button' id="_cif"/><br>
+    <textarea id="out" placeholder="результат" readonly></textarea><br>
+    <input type="button" value="Скопировать весь результат" onclick="cwo();" class='button' id="_cwo"/><br>
+    <input type="button" value="Уничтожить все данные" onclick="dad();" class='button' id="_dad"/><br>
+    <hr>
+    <h1>Ваши контакты:</h1>
+    <div id="contacts_list"></div>
+    <input type="button" value="Не скрывать реальные имена" onclick="rrn();" class='button' id="_rrn"/>
+    <hr>
+    <h2>Штуки для экпертов:</h2>
+    <input type="button" value="Поменять ключ шифрования" onclick="cek();" class='button' id="_cek"/><br>
+    <input type="button" value="Получить секретный ключ" onclick="gsek();" class='button' id="_gsek"/><text style="color: red;">(НИКОМУ НЕ СООБЩАЙТЕ СВОЙ СЕКРЕТНЫЙ КЛЮЧ)</text><br>
+    <hr>
+    <h2>Крутые ссылки:</h2>
+    <h4>библеотека шифрования OpenPGP.js находится здесь: <a href="https://github.com/openpgpjs/openpgpjs">https://github.com/openpgpjs/openpgpjs</a>.</h4>
+    <h4>Исходный код находится здесь: <a href="https://github.com/Gudhein3/WhereGP">https://github.com/Gudhein3/WhereGP</a>.</h4>
+    <h4>О проблемах можете писать сюда: <a href="https://github.com/Gudhein3/WhereGP/issues">https://github.com/Gudhein3/WhereGP/issues</a>.</h4>
+    <hr>
+    <h2>Права пользования и всё такое</h2>
+    <input type="button" value="Показать правовую информацию" onclick="tlt();" class='button' id="_tlt"/>
+    <div id="legal_things" hidden>
+      <h4>Эта страница не отправляет ваши персональные данные по сети, так что не переживайте.</h4>
+      <h4>Вы можете делать с этой страницой всё что хотете, но вы обязаны соблюдать <a href="./LICENSE">лицензию данной программы</a> и <a href="./THIRDPARTY_LICENSES">её компонетов</a>.</h4>
+    </div>
+    <script src="openpgp.min.js"></script>
+    <script>
+      localization = {
+          "this_inf_for_key": "Ответы на следующие вопросы будут использованы в метаданных ключа, которых будут видеть люди получившие ваш ключ",
+          "uralg": "Вы уже зашли.",
+          "undlg": "Вы должны зайти сначала.\nВы хотите войти?",
+          "umsc": "Вы должны ввести имя контакта сначала.",
+          "cki": "Вы должны ввести правильный ключ контакта перед добавлением его.",
+          "enter_fn": "Введите ваше имя. (к примеру, Иван Иванов или superdude3000)",
+          "enter_em": "Введите ваш адрес электронной почты. (к примеру, ivan.ivanov@ivanovs.ru или a@a.aa)",
+          "enter_em_inv": "Неверный Email.\nВведите ваш адрес электронной почты. (к примеру, ivan.ivanov@ivanovs.ru или a@a.aa)",
+          "dst_al_dt": "Вы РЕАЛЬНО хотите уничтожить все данные?",
+          "no_contacts": "У вас их нет :(",
+          "is_not_ur_cn": "Вы должны добавить контакт сначала: ",
+          "welcome_cn": "Добро пожаловать, ",
+          "do_u_want_rn_cn": "Вы реально хотите переименовать контакт: ",
+          "do_u_want_rm_cn": "Вы реально хотите удалить контакт: ",
+          "ent_new_cn_nm": "Введите новое имя для контакта: ",
+          "del_cn_js": "[Удалить]",
+          "rn_cn_js": "[Переименовать]",
+          "ch_key_cnfm": "Вы РЕАЛЬНО хотите изменить свой ключ?\nНапишите \"да_я_инженер\" если да.",
+          "gt_key_cnfm": "Вы РЕАЛЬНО хотите получить свой секретный ключ?\nНапишите \"да_я_инженер\" если да.",
+          "exp_tpe": "да_я_инженер",
+          "ch_key_priv_cnfm": "да_я_хочу_приватн",
+          "ch_key_pub_cnfm": "да_я_хочу_пуб",
+          "ch_key": "Напишите \"да_я_хочу_приватн\" если вы хотите поменять приватный ключ\nНапишите \"да_я_хочу_пуб\" если вы хотите поменять публичный ключ",
+          "sh_legal_th": "Показать правовую информацию",
+          "hd_legal_th": "Скрыть правовую информацию",
+          "inv_cn_id": "Имя/Email контакта неправильны",
+          "rs_rl_nms": "Скрывать реальные имена",
+          "d_rs_rl_nms": "Не скрывать реальные имена",
+          "rstd": "Скрыто",
+      };
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>
